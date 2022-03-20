@@ -11,7 +11,7 @@
 
 ## 介绍
 
-简单网的后台，基于 Nestjs，数据库使用 MongoDB 和 Redis
+简单聊的后台，基于 Nestjs，数据库使用 MongoDB 和 Redis
 
 ## 进度
 
