@@ -1,73 +1,86 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+<div align="center">
+  <a href="https://nestjs.com/" target="blank">
+  <img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
+  <br>
+  <br>
+  <a href="https://github.com/lhj-web/edu-cms-api/blob/main/LICENSE"><img alt="GitHub license" src="https://img.shields.io/github/license/lhj-web/edu-cms-api"></a>
+  <a href="https://nestjs.com/"><img alt="GitHub license" src="https://img.shields.io/badge/nest-8.2.6-red"></a>
+  <a href="https://typegoose.github.io/typegoose/"><img alt="GitHub license" src="https://img.shields.io/badge/typegoose-9.5.0-blue"></a>
+  <h1>Slack-API</h1>
+</div>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 介绍
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+简单网的后台，基于 Nestjs，数据库使用 MongoDB 和 Redis
 
-## Description
+## 进度
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- [] 注册(邮箱注册，可找回)
+- [] 登陆，需验证码
+- [] 刷新 token，token 校验
 
-## Installation
+  ......
 
-```bash
-$ npm install
+## 项目结构
+
+```
+.
+├── dist // 打包后的目录
+├── src
+│   ├── common // 项目通用模块
+│   │   ├── decorators // 装饰器
+│   │   ├── filters // 过滤器
+│   │   ├── guards // 守卫
+│   │   ├── interceptors // 拦截器(请求前后)
+│   │   ├── pipes // 管道
+│   │   └── transformers // 转换器
+│   ├── constants // 全局变量
+│   ├── errors // http请求错误类封装
+│   ├── interfaces // 全局接口
+│   ├── modules // 系统各模块
+│   │   ├── auth
+│   │   └── user
+│   ├── processors
+│   │   ├── cache // 缓存
+│   │   ├── database // 数据库模块
+│   │   └── helper // 邮箱模块
+│   └── utils // 工具：分页和日志
+└── test // 测试
 ```
 
-## Running the app
+## 接口地址
+
+[接口地址链接]() **访问密码：**
+
+## 安装使用
+
+- 安装依赖
+
+```bash
+cd edu-cms-api
+
+pnpm i
+```
+
+- 打包
+
+```bash
+pnpm build
+```
+
+- 运行
 
 ```bash
 # development
-$ npm run start
+pnpm dev
 
 # watch mode
-$ npm run start:dev
+pnpm start:dev
 
 # production mode
-$ npm run start:prod
+$ pnpm start:prod
 ```
 
-## Test
+## 数据库表设计
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+**表注释：系统用户**
