@@ -1,0 +1,7 @@
+*.sh
+node_modules
+*.md
+dist
+.husky
+/docs
+commitlint.config.js
