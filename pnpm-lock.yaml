@@ -3,36 +3,38 @@ lockfileVersion: 5.3
 specifiers:
   '@commitlint/cli': 16.1.0
   '@commitlint/config-conventional': 16.0.0
-  '@nestjs/cli': ^8.0.0
-  '@nestjs/common': ^8.0.0
-  '@nestjs/core': ^8.0.0
+  '@nestjs/cli': ^8.2.3
+  '@nestjs/common': ^8.4.1
+  '@nestjs/core': ^8.4.1
   '@nestjs/jwt': ^8.0.0
   '@nestjs/mapped-types': '*'
   '@nestjs/passport': ^8.2.1
-  '@nestjs/platform-express': ^8.0.0
-  '@nestjs/schematics': ^8.0.0
-  '@nestjs/testing': ^8.0.0
+  '@nestjs/platform-express': ^8.4.1
+  '@nestjs/schematics': ^8.0.8
+  '@nestjs/testing': ^8.4.1
   '@typegoose/auto-increment': ^1.2.0
   '@typegoose/typegoose': ^9.7.0
   '@types/express': ^4.17.13
   '@types/jest': 27.0.2
   '@types/lodash': ^4.14.180
-  '@types/node': ^16.0.0
+  '@types/node': ^16.11.26
   '@types/supertest': ^2.0.11
-  '@typescript-eslint/eslint-plugin': ^5.0.0
-  '@typescript-eslint/parser': ^5.0.0
+  '@typescript-eslint/eslint-plugin': ^5.15.0
+  '@typescript-eslint/parser': ^5.15.0
+  body-parser: ^1.19.2
   cache-manager: ^3.6.0
-  chalk: ^4
+  chalk: ^4.1.2
   class-transformer: ^0.5.1
   class-validator: ^0.13.2
   commitizen: ^4.2.4
+  compression: ^1.7.4
   conventional-changelog-cli: ^2.2.2
   cross-env: ^7.0.3
-  eslint: ^8.0.1
-  eslint-config-prettier: ^8.3.0
+  eslint: ^8.11.0
+  eslint-config-prettier: ^8.5.0
   eslint-plugin-prettier: ^4.0.0
   husky: ^7.0.4
-  jest: ^27.2.5
+  jest: ^27.5.1
   js-base64: ^3.7.2
   jsonwebtoken: ^8.5.1
   lint-staged: ^12.3.7
@@ -44,19 +46,19 @@ specifiers:
   passport: ^0.5.2
   passport-jwt: ^4.0.0
   passport-local: ^1.0.0
-  prettier: ^2.3.2
+  prettier: ^2.6.0
   redis: ^4.0.4
   reflect-metadata: ^0.1.13
   rimraf: ^3.0.2
-  rxjs: ^7.2.0
-  source-map-support: ^0.5.20
-  supertest: ^6.1.3
+  rxjs: ^7.5.5
+  source-map-support: ^0.5.21
+  supertest: ^6.2.2
   svg-captcha: ^1.4.0
-  ts-jest: ^27.0.3
-  ts-loader: ^9.2.3
-  ts-node: ^10.0.0
-  tsconfig-paths: ^3.10.1
-  typescript: ^4.3.5
+  ts-jest: ^27.1.3
+  ts-loader: ^9.2.8
+  ts-node: ^10.7.0
+  tsconfig-paths: ^3.14.0
+  typescript: ^4.6.2
   webpack: '*'
   yargs: ^17.4.0
 
@@ -69,10 +71,12 @@ dependencies:
   '@nestjs/platform-express': 8.4.1_214a294e539403889bf33d78c1f08a26
   '@typegoose/auto-increment': 1.2.0_mongoose@6.2.7
   '@typegoose/typegoose': 9.7.0_mongoose@6.2.7
+  body-parser: 1.19.2
   cache-manager: 3.6.0
   chalk: 4.1.2
   class-transformer: 0.5.1
   class-validator: 0.13.2
+  compression: 1.7.4
   cross-env: 7.0.3
   js-base64: 3.7.2
   jsonwebtoken: 8.5.1
@@ -1334,8 +1338,8 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /@types/babel__core/7.1.18:
-    resolution: {integrity: sha512-S7unDjm/C7z2A2R9NzfKCK1I+BAALDtxEmsJBwlB3EzNfb929ykjL++1CK9LO++EIp2fQrC8O+BwjKvz6UeDyQ==}
+  /@types/babel__core/7.1.19:
+    resolution: {integrity: sha512-WEOTgRsbYkvA/KCsDwVEGkd7WAr1e3g31VHQ8zy5gul/V1qKullU/BU5I68X5v7V3GnB9eotmom4v5a5gjxorw==}
     dependencies:
       '@babel/parser': 7.17.8
       '@babel/types': 7.17.0
@@ -2054,7 +2058,7 @@ packages:
       '@babel/core': 7.17.8
       '@jest/transform': 27.5.1
       '@jest/types': 27.5.1
-      '@types/babel__core': 7.1.18
+      '@types/babel__core': 7.1.19
       babel-plugin-istanbul: 6.1.1
       babel-preset-jest: 27.5.1_@babel+core@7.17.8
       chalk: 4.1.2
@@ -2083,7 +2087,7 @@ packages:
     dependencies:
       '@babel/template': 7.16.7
       '@babel/types': 7.17.0
-      '@types/babel__core': 7.1.18
+      '@types/babel__core': 7.1.19
       '@types/babel__traverse': 7.14.2
     dev: true
 
@@ -2221,6 +2225,11 @@ packages:
     dependencies:
       dicer: 0.2.5
       readable-stream: 1.1.14
+    dev: false
+
+  /bytes/3.0.0:
+    resolution: {integrity: sha1-0ygVQE1olpn4Wk6k+odV3ROpYEg=}
+    engines: {node: '>= 0.8'}
     dev: false
 
   /bytes/3.1.2:
@@ -2516,6 +2525,26 @@ packages:
   /component-emitter/1.3.0:
     resolution: {integrity: sha512-Rd3se6QB+sO1TwqZjscQrurpEPIfO0/yYnSin6Q/rD3mOutHvUrCAhJub3r90uNb+SESBuE0QYoB90YdfatsRg==}
     dev: true
+
+  /compressible/2.0.18:
+    resolution: {integrity: sha512-AF3r7P5dWxL8MxyITRMlORQNaOA2IkAFaTr4k7BUumjPtRpGDTZpl0Pb1XCO6JeDCBdp126Cgs9sMxqSjgYyRg==}
+    engines: {node: '>= 0.6'}
+    dependencies:
+      mime-db: 1.52.0
+    dev: false
+
+  /compression/1.7.4:
+    resolution: {integrity: sha512-jaSIDzP9pZVS4ZfQ+TzvtiWhdpFhE2RDHz8QJkpX9SIpLq88VueF5jJw6t+6CUQcAoA6t+x89MLrWAqpfDE8iQ==}
+    engines: {node: '>= 0.8.0'}
+    dependencies:
+      accepts: 1.3.8
+      bytes: 3.0.0
+      compressible: 2.0.18
+      debug: 2.6.9
+      on-headers: 1.0.2
+      safe-buffer: 5.1.2
+      vary: 1.1.2
+    dev: false
 
   /concat-map/0.0.1:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
@@ -5421,6 +5450,11 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       ee-first: 1.1.1
+    dev: false
+
+  /on-headers/1.0.2:
+    resolution: {integrity: sha512-pZAE+FJLoyITytdqK0U5s+FIpjN0JP3OzFi/u8Rx+EV5/W+JTWGXG8xFzevE7AjBfDqHv/8vL8qQsIhHnqRkrA==}
+    engines: {node: '>= 0.8'}
     dev: false
 
   /once/1.4.0:
