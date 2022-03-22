@@ -33,14 +33,14 @@ const renderLog = (method: LoggerLevel, levelLabel: string, messageColor: chalk.
     // FIXME: 当method为‘debug’时报错console[method] is not a function
     if (method === 'dubug')
       return console.debug(
-        chalk.greenBright('[EDU] - '),
+        chalk.greenBright('[SLACK] - '),
         renderTime(),
         levelLabel,
         renderModule(message),
         ...renderMessage(messageColor, args),
       );
     return console[method](
-      chalk.greenBright('[EDU] - '),
+      chalk.greenBright('[SLACK] - '),
       renderTime(),
       levelLabel,
       renderModule(message),
