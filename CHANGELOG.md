@@ -1,3 +1,11 @@
+## [0.0.4](https://github.com/lhj-web/slack-backend/compare/v0.0.3...v0.0.4) (2022-03-22)
+
+### Features
+
+- **auth:** add jwt ([0e6d4f6](https://github.com/lhj-web/slack-backend/commit/0e6d4f6ae1ef580442b4cbfa1c9aeae6b6ae6e94))
+- **auth:** add logic of register and login ([e6a7e70](https://github.com/lhj-web/slack-backend/commit/e6a7e707595f0ccf4324c5adc965745d6eaaf9ed))
+- **guards:** add auth guard ([72d053d](https://github.com/lhj-web/slack-backend/commit/72d053d8998b91f75245c74d7b1ad1a6483dbdcf))
+
 ## [0.0.3](https://codeup.aliyun.com/6212f97e74c3f3b550746f5d/slack/slack-backend/compare/v0.0.2...v0.0.3) (2022-03-21)
 
 ### Features

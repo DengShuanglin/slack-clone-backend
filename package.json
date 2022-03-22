@@ -1,6 +1,6 @@
 {
   "name": "slack-backend",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "author": "Name6",
   "private": true,
@@ -21,7 +21,7 @@
     "lint:lint-staged": "lint-staged",
     "lint:prettier": "prettier --write  \"src/**/*.{js,json,tsx,css,less,scss,vue,html,md}\"",
     "lint:eslint": "eslint --cache --max-warnings 0   \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "log": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "log": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "prepare": "husky install"
   },
   "dependencies": {
