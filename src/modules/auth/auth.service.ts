@@ -26,18 +26,18 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {}
 
-  public createToken(id: number, username: string): TokenResult {
+  public createToken(id: number, email: string): TokenResult {
     return {
-      access_token: this.jwtService.sign({ id, username }),
+      access_token: this.jwtService.sign({ id, email }),
       refresh_token: this.jwtService.sign(
-        { id, username },
+        { id, email },
         { expiresIn: APP_CONFIG.AUTH.refreshExpiresIn as number },
       ),
     };
   }
 
-  public validateAuthData(payload: any): Promise<any> {
-    return payload.id && payload.username ? payload : null;
+  public validateAuthData(payload: any) {
+    return payload.id && payload.email ? payload : null;
   }
 
   public async register({ verifyCode, codeId, password, email }: RegisterInfoPayload) {

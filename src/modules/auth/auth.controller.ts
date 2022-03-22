@@ -4,6 +4,10 @@
  * @author Name6
  */
 
+import type { Request } from 'express';
+import type { TokenResult } from './auth.interface';
+import type { RequestUser } from '@/interfaces/req-user.interface';
+
 import { Body, Controller, Post, HttpStatus, Get, Req, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
@@ -13,9 +17,7 @@ import {
   RegisterInfoPayload,
 } from './auth.model';
 import { HttpProcessor } from '@/common/decorators/http.decorator';
-import { TokenResult } from './auth.interface';
 import { Authorize } from '@/common/decorators/authorize.decorator';
-import { RequestUser } from '@/interfaces/req-user.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -40,9 +42,9 @@ export class AuthController {
 
   @Get('refreshToken')
   @HttpProcessor.handle({ message: 'Refresh token' })
-  refreshToken(@Req() req): TokenResult {
-    const { id, username } = req.user as RequestUser;
-    const token = this.authService.createToken(id, username);
+  refreshToken(@Req() req: Request): TokenResult {
+    const { id, email } = req.user as RequestUser;
+    const token = this.authService.createToken(id, email);
     return token;
   }
 
