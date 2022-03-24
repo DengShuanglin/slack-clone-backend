@@ -42,13 +42,22 @@ export class User {
   @prop({ required: true, unique: true })
   email: string;
 
-  nickname?: string;
+  @IsOptional()
+  @IsString()
+  @prop({ default: '' })
+  nickname: string;
 
   @IsOptional()
   @IsArray()
   @ArrayUnique()
   @prop({ type: () => [Number] })
-  roles?: number[];
+  roles: number[];
+
+  @IsOptional()
+  @IsArray()
+  @ArrayUnique()
+  @prop({ type: () => [Number] })
+  friends: number[];
 
   @IsOptional()
   @IsString()
@@ -56,40 +65,36 @@ export class User {
     default:
       'https://my-picture-bed-1304169582.cos.ap-nanjing.myqcloud.com/picture/user.jpg',
   })
-  avatar?: string;
+  avatar: string;
 
   @IsOptional()
   @IsArray()
   @ArrayUnique()
   @prop({ type: () => [Number] })
-  channels?: number[];
+  channels: number[];
 
   @prop({ default: Date.now, immutable: true })
-  create_at?: Date;
+  create_at: Date;
 
   @prop({ default: Date.now })
-  update_at?: Date;
+  update_at: Date;
 
   @IsOptional()
   @IsInt()
   @prop({ default: 1 })
-  status?: 1 | 0;
+  status: 1 | 0;
 }
 
-export class UserInfo {
-  @IsDefined()
-  @IsNotEmpty({ message: 'hi' })
+export class UserInfoPayload {
+  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  username: string;
+  nickname?: string;
 
-  @IsDefined()
-  @IsNotEmpty({ message: 'hello' })
+  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  password: string;
-
   avatar?: string;
-
-  desc?: string;
 }
 
 export const UserProvider = getProviderByTypegooseClass(User);

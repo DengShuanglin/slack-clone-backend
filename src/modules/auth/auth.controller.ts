@@ -8,7 +8,16 @@ import type { Request } from 'express';
 import type { TokenResult } from './auth.interface';
 import type { RequestUser } from '@/interfaces/req-user.interface';
 
-import { Body, Controller, Post, HttpStatus, Get, Req, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  HttpStatus,
+  Get,
+  Req,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   AuthUserInfoPayload,
@@ -17,21 +26,19 @@ import {
   RegisterInfoPayload,
 } from './auth.model';
 import { HttpProcessor } from '@/common/decorators/http.decorator';
-import { Authorize } from '@/common/decorators/authorize.decorator';
+import { JwtAuthGuard } from '@/common/guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  @Authorize()
   @HttpProcessor.handle({ message: 'Register', error: HttpStatus.BAD_REQUEST })
   register(@Body() body: RegisterInfoPayload): Promise<boolean> {
     return this.authService.register(body);
   }
 
   @Post('login')
-  @Authorize()
   @HttpProcessor.handle({ message: 'Login', error: HttpStatus.BAD_REQUEST })
   async login(@Body() body: AuthUserInfoPayload): Promise<TokenResult> {
     const { email, password, captchaId, verifyCode } = body;
@@ -41,6 +48,7 @@ export class AuthController {
   }
 
   @Get('refreshToken')
+  @UseGuards(JwtAuthGuard)
   @HttpProcessor.handle({ message: 'Refresh token' })
   refreshToken(@Req() req: Request): TokenResult {
     const { id, email } = req.user as RequestUser;
@@ -49,7 +57,6 @@ export class AuthController {
   }
 
   @Get('captcha/img')
-  @Authorize()
   @HttpProcessor.handle({
     message: 'Captcha',
     error: HttpStatus.BAD_REQUEST,
@@ -59,7 +66,6 @@ export class AuthController {
   }
 
   @Post('captcha/code')
-  @Authorize()
   @HttpProcessor.handle({ message: 'Send email', error: HttpStatus.BAD_REQUEST })
   code(@Body() { email }: EmailInfo) {
     return this.authService.sendCode(email);

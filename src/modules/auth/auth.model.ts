@@ -4,11 +4,11 @@
  * @author Name6
  */
 
+import { prop } from '@typegoose/typegoose';
 import {
   IsDefined,
   IsEmail,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   Length,
@@ -39,12 +39,13 @@ export class AuthUserInfoPayload {
 
 export class ImageCaptchaPayload {
   @IsOptional()
-  @IsNumber()
-  readonly width = 100;
+  @IsString()
+  @prop({ set: (val: string) => Number(val), get: (val: number) => Number(val) })
+  readonly width: number;
 
   @IsOptional()
-  @IsNumber()
-  readonly height = 50;
+  @IsString()
+  readonly height: number;
 }
 
 export class RegisterInfoPayload {
