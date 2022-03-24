@@ -17,9 +17,14 @@ import { ErrorInterceptor } from '@/common/interceptors/error.interceptor';
 import { environment, isProdEnv } from '@/app.environment';
 import logger from '@/utils/logger';
 import * as APP_CONFIG from '@/app.config';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, isProdEnv ? { logger: false } : {});
+  const app = await NestFactory.create<NestExpressApplication>(
+    AppModule,
+    isProdEnv ? { logger: false } : {},
+  );
   app.setGlobalPrefix('api');
   app.use(compression());
   app.use(bodyParser.json({ limit: '1mb' }));
@@ -32,6 +37,14 @@ async function bootstrap() {
     new ErrorInterceptor(new Reflector()),
     new LoggingInterceptor(),
   );
+
+  // 配置静态资源
+  app.useStaticAssets(join(__dirname, '../public', '/'), {
+    prefix: '/',
+    setHeaders: (res) => {
+      res.set('Cache-Control', 'max-age=2592000');
+    },
+  });
   return await app.listen(APP_CONFIG.APP.PORT);
 }
 

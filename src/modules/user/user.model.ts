@@ -29,7 +29,7 @@ import { generalAutoIncrementIDConfig } from '@/constants/increment.constant';
   },
 })
 export class User {
-  @prop({ unique: true })
+  @prop({ unique: true, get: (val: number) => '' + val })
   id: number;
 
   @IsDefined()
@@ -56,8 +56,8 @@ export class User {
   @IsOptional()
   @IsArray()
   @ArrayUnique()
-  @prop({ type: () => [Number] })
-  friends: number[];
+  @prop({ type: () => [String] })
+  friends: string[];
 
   @IsOptional()
   @IsString()

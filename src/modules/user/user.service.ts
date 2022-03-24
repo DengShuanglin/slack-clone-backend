@@ -17,13 +17,13 @@ export class UserService {
     await this.userModel.create(user);
   }
 
-  async findOne(email: string): Promise<User> {
-    const user = await this.userModel.findOne({ email }).exec();
+  async findOne(info: { email?: string; id?: string }): Promise<User> {
+    const user = await this.userModel.findOne({ info }).exec();
     if (!user) throw 'The user is not exist';
     return user;
   }
 
-  async find(ids: number[]) {
+  async find(ids: string[]) {
     const users = await this.userModel.find({ id: { $in: ids } }).exec();
     return users.map((item) => ({
       id: item.id as number,
@@ -32,11 +32,11 @@ export class UserService {
     }));
   }
 
-  updateOne(info: UserInfoPayload) {
+  updateOne(id, info: UserInfoPayload) {
     const { nickname, avatar } = info;
     const query = {};
     if (nickname) query['nickname'] = nickname;
     if (avatar) query['avatar'] = avatar;
-    this.userModel.updateOne(query).exec();
+    this.userModel.updateOne({ id }, query).exec();
   }
 }

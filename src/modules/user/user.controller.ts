@@ -22,9 +22,10 @@ export class UserController {
   @HttpProcessor.handle({ message: 'Get user info' })
   async get(@Req() req: Request) {
     const { email, id } = req.user as RequestUser;
-    const user = await this.userService.findOne(email);
+    const user = await this.userService.findOne({ email });
     const friends = await this.userService.find(user.friends);
     return {
+      user_id: id,
       nickname: user.nickname || 'user' + id,
       avatar: user.avatar,
       channels: user.channels,
@@ -51,8 +52,9 @@ export class UserController {
 
   @Put('update')
   @HttpProcessor.handle({ message: 'Update personal info' })
-  update(@Body() body: UserInfoPayload) {
-    this.userService.updateOne(body);
+  update(@Body() body: UserInfoPayload, @Req() req: Request) {
+    const { id } = req.user as RequestUser;
+    this.userService.updateOne(id, body);
     return true;
   }
 }

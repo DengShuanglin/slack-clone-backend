@@ -49,7 +49,7 @@ export class AuthController {
 
   @Get('refreshToken')
   @UseGuards(JwtAuthGuard)
-  @HttpProcessor.handle({ message: 'Refresh token' })
+  @HttpProcessor.handle({ message: 'Refresh token', error: 2000 })
   refreshToken(@Req() req: Request): TokenResult {
     const { id, email } = req.user as RequestUser;
     const token = this.authService.createToken(id, email);

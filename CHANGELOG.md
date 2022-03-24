@@ -1,3 +1,9 @@
+## [0.0.6](https://github.com/lhj-web/slack-backend/compare/v0.0.5...v0.0.6) (2022-03-24)
+
+### Bug Fixes
+
+- fix the captha type error ([947e8a2](https://github.com/lhj-web/slack-backend/commit/947e8a285c9b1d388307ec2483a5b954a86602b3))
+
 ## [0.0.5](https://github.com/lhj-web/slack-backend/compare/v0.0.4...v0.0.5) (2022-03-22)
 
 ### Features

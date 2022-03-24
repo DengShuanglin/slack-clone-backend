@@ -26,7 +26,7 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {}
 
-  public createToken(id: number, email: string): TokenResult {
+  public createToken(id: string, email: string): TokenResult {
     return {
       access_token: this.jwtService.sign({ id, email }),
       refresh_token: this.jwtService.sign(
@@ -41,25 +41,21 @@ export class AuthService {
   }
 
   public async register({ verifyCode, codeId, password, email }: RegisterInfoPayload) {
-    const code = await this.cacheService.get<string>(`admin:captcha:code:${codeId}`);
-    if (code !== verifyCode) throw '验证码错误或失效！';
+    // const code = await this.cacheService.get<string>(`admin:captcha:code:${codeId}`);
+    // if (code !== verifyCode) throw '验证码错误或失效！';
     const isExist = await this.userService.isExist(email);
     if (isExist) throw '该用户已存在！';
     this.userService.createOne({ email, password: encodeMD5(password) });
     return true;
   }
 
-  public async adminLogin(
-    email: string,
-    password: string,
-  ): Promise<TokenResult & { user_id: number }> {
-    const user = await this.userService.findOne(email);
+  public async adminLogin(email: string, password: string): Promise<TokenResult> {
+    const user = await this.userService.findOne({ email });
     const existedPassword = user.password;
     const loginPassword = encodeMD5(password);
-
     if (loginPassword === existedPassword) {
-      const token = this.createToken(user.id, user.email);
-      return { ...token, user_id: user.id };
+      const token = this.createToken(user.id as unknown as string, user.email);
+      return { ...token };
     } else throw 'Password incorrect';
   }
 
@@ -70,7 +66,7 @@ export class AuthService {
    */
   public async getCaptcha(size: ImageCaptchaPayload) {
     const svg = svgCaptcha.create({
-      size: 4,
+      size: 6,
       color: true,
       noise: 4,
       width: isEmpty(size.width) ? 100 : size.width,
@@ -111,7 +107,7 @@ export class AuthService {
     const ret = { codeId: nanoid() };
 
     await this.cacheService.set(`admin:captcha:code:${ret.codeId}`, verifyCode, {
-      ttl: 60,
+      ttl: 60 * 5,
     });
     const time = new Date();
     const years = time.getFullYear(),

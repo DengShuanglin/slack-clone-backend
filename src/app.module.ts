@@ -12,9 +12,18 @@ import { CacheModule } from './processors/cache/cache.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { FriendModule } from './modules/friend/friend.module';
 
 @Module({
-  imports: [DatabaseModule, HelperModule, CacheModule, AuthModule, UserModule, ChatModule],
+  imports: [
+    DatabaseModule,
+    HelperModule,
+    CacheModule,
+    AuthModule,
+    UserModule,
+    ChatModule,
+    FriendModule,
+  ],
   controllers: [AppController],
 })
 export class AppModule {}
