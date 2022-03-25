@@ -4,8 +4,8 @@
  * @author Name6
  */
 
-import { IsDefined, IsString, IsArray, IsEmpty } from 'class-validator';
-import { prop, modelOptions, plugin } from '@typegoose/typegoose';
+import { IsDefined, IsString, IsArray, IsEmpty, IsNotEmpty } from 'class-validator';
+import { prop, modelOptions, plugin, Severity } from '@typegoose/typegoose';
 import { getProviderByTypegooseClass } from '@/common/transformers/model.transformer';
 import { AutoIncrementID } from '@typegoose/auto-increment';
 import { generalAutoIncrementIDConfig } from '@/constants/increment.constant';
@@ -25,6 +25,7 @@ export enum MsgType {
       updatedAt: 'update_at',
     },
   },
+  options: { allowMixed: Severity.ALLOW },
 })
 export class FriendMessage {
   @prop({ unique: true, get: (val: number) => '' + val })
@@ -59,6 +60,18 @@ interface Message {
   content: string;
 
   time: number;
+}
+
+export class UserAndFriendId {
+  @IsDefined()
+  @IsNotEmpty()
+  @IsString()
+  user_id: string;
+
+  @IsDefined()
+  @IsNotEmpty()
+  @IsString()
+  friend_id: string;
 }
 
 export const FriendMessageProvider = getProviderByTypegooseClass(FriendMessage);

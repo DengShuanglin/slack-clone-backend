@@ -18,7 +18,7 @@ export class UserService {
   }
 
   async findOne(info: { email?: string; id?: string }): Promise<User> {
-    const user = await this.userModel.findOne({ info }).exec();
+    const user = await this.userModel.findOne(info).exec();
     if (!user) throw 'The user is not exist';
     return user;
   }

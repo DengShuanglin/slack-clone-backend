@@ -13,7 +13,6 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { createWriteStream } from 'fs';
 import { InjectModel } from '@/common/transformers/model.transformer';
 import { MongooseModel } from '@/interfaces/mongoose.interface';
 import { User } from '../user/user.model';
@@ -22,8 +21,7 @@ import { RCode } from '@/constants/system.constant';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '@/common/guards/auth.guard';
 import { CacheService } from '@/processors/cache/cache.service';
-import { join } from 'path';
-import { FriendMessage, MsgType } from '../friend/friend.model';
+import { FriendMessage } from '../friend/friend.model';
 
 @WebSocketGateway({
   // 处理跨域
@@ -157,12 +155,6 @@ export class ChatGateway {
     if (user) {
       if (user_id && friend_id) {
         const roomId = user_id > friend_id ? user_id + friend_id : friend_id + user_id;
-        if (data.messageType === MsgType.img) {
-          const randomName = `${Date.now()}$${roomId}$${data.width}$${data.height}`;
-          const stream = createWriteStream(join('public/static', randomName));
-          stream.write(data.content);
-          data.content = randomName;
-        }
         data.time = new Date().valueOf();
         await this.friendMessageModel
           .updateOne(
