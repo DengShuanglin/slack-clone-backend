@@ -39,4 +39,20 @@ export class UserService {
     if (avatar) query['avatar'] = avatar;
     this.userModel.updateOne({ id }, query).exec();
   }
+
+  async fuzzySearch(email: string) {
+    let users = await this.userModel
+      .find(
+        {
+          email: { $regex: new RegExp('^' + email) },
+        },
+        { email: 1, id: 1, avatar: 1, nickname: 1, _id: 0 },
+      )
+      .exec();
+    users = users.map((item) => {
+      if (item.nickname === '') item.nickname = 'user' + item.id;
+      return item;
+    });
+    return users;
+  }
 }

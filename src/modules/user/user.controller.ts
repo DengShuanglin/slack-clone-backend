@@ -4,14 +4,15 @@
  * @author Name6
  */
 
-import type { Request } from 'express';
+import { Request } from 'express';
 import type { RequestUser } from '@/interfaces/req-user.interface';
 
 import { HttpProcessor } from '@/common/decorators/http.decorator';
-import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserInfoPayload } from './user.model';
 import { JwtAuthGuard } from '@/common/guards/auth.guard';
+import { Authorize } from '@/common/decorators/authorize.decorator';
 
 @Controller('user')
 @UseGuards(JwtAuthGuard)
@@ -56,5 +57,12 @@ export class UserController {
     const { id } = req.user as RequestUser;
     this.userService.updateOne(id, body);
     return true;
+  }
+
+  @Get('search')
+  @Authorize()
+  @HttpProcessor.handle({ message: 'Get users' })
+  getUsers(@Query() { email }: { email: string }) {
+    return this.userService.fuzzySearch(email);
   }
 }
