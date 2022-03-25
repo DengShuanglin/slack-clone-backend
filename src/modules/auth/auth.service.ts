@@ -41,8 +41,8 @@ export class AuthService {
   }
 
   public async register({ verifyCode, codeId, password, email }: RegisterInfoPayload) {
-    // const code = await this.cacheService.get<string>(`admin:captcha:code:${codeId}`);
-    // if (code !== verifyCode) throw '验证码错误或失效！';
+    const code = await this.cacheService.get<string>(`admin:captcha:code:${codeId}`);
+    if (code !== verifyCode) throw '验证码错误或失效！';
     const isExist = await this.userService.isExist(email);
     if (isExist) throw '该用户已存在！';
     this.userService.createOne({ email, password: encodeMD5(password) });
@@ -66,7 +66,7 @@ export class AuthService {
    */
   public async getCaptcha(size: ImageCaptchaPayload) {
     const svg = svgCaptcha.create({
-      size: 6,
+      size: 4,
       color: true,
       noise: 4,
       width: isEmpty(size.width) ? 100 : size.width,
@@ -101,7 +101,7 @@ export class AuthService {
    */
   public async sendCode(email: string): Promise<CodeResult> {
     let verifyCode = '';
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 6; i++) {
       verifyCode += Math.floor(Math.random() * 10);
     }
     const ret = { codeId: nanoid() };

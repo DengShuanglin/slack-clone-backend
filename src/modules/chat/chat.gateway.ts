@@ -13,6 +13,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { createWriteStream } from 'fs';
 import { InjectModel } from '@/common/transformers/model.transformer';
 import { MongooseModel } from '@/interfaces/mongoose.interface';
 import { User } from '../user/user.model';
@@ -21,7 +22,6 @@ import { RCode } from '@/constants/system.constant';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '@/common/guards/auth.guard';
 import { CacheService } from '@/processors/cache/cache.service';
-import { createWriteStream } from 'fs';
 import { join } from 'path';
 import { FriendMessage, MsgType } from '../friend/friend.model';
 
@@ -55,7 +55,6 @@ export class ChatGateway {
   @SubscribeMessage('addFriend')
   async addFriend(@ConnectedSocket() client: Socket, @MessageBody() data: UserMap) {
     const { user_id, friend_id } = data;
-    console.log(user_id, friend_id);
     const user = await this.userModel.findOne({ id: user_id }).exec();
     const friend = await this.userModel.findOne({ id: friend_id }).exec();
     if (user && friend) {
@@ -117,6 +116,7 @@ export class ChatGateway {
     @MessageBody() data: UserMap,
   ): Promise<any> {
     const { friend_id, user_id } = data;
+
     if (friend_id && user_id) {
       const roomId = user_id > friend_id ? user_id + friend_id : friend_id + user_id;
       const user = await this.userModel.findOne({ id: user_id }).exec();
@@ -125,7 +125,11 @@ export class ChatGateway {
         const isRelation1 = user.friends.some((id) => id === friend_id);
         const isRelation2 = friend.friends.some((id) => id === user_id);
         if (isRelation1 && isRelation2) {
-          this.friendMessageModel.create({ user_id, friend_id });
+          const friendMessage = await this.friendMessageModel
+            .findOne({ user_id, friend_id })
+            .exec();
+          !friendMessage && (await this.friendMessageModel.create({ user_id, friend_id }));
+          if (friendMessage?.msgs.length) data['msgs'] = friendMessage?.msgs;
           client.join(roomId);
           this.server.to(user_id).emit('joinFriendSocket', {
             code: RCode.OK,
@@ -160,7 +164,7 @@ export class ChatGateway {
           data.content = randomName;
         }
         data.time = new Date().valueOf();
-        this.friendMessageModel
+        await this.friendMessageModel
           .updateOne(
             { user_id, friend_id },
             { $push: { msgs: { messageType, content: data.content, time: data.time } } },
@@ -176,7 +180,4 @@ export class ChatGateway {
         .emit('friendMessage', { code: RCode.FAIL, msg: '你没资格发消息', data });
     }
   }
-
-  // @SubscribeMessage('chatData')
-  // async getChatData(@ConnectedSocket() client: Socket, @MessageBody() body: )
 }

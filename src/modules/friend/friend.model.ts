@@ -43,7 +43,7 @@ export class FriendMessage {
   friend_id: string;
 
   @IsArray()
-  @prop({ default: [], type: () => [Message] })
+  @prop({ default: [] })
   msgs: Message[];
 
   @prop({ default: Date.now, immutable: true })
@@ -53,15 +53,9 @@ export class FriendMessage {
   update_at: Date;
 }
 
-class Message {
-  @IsDefined()
-  @IsEmpty()
-  @IsString()
+interface Message {
   messageType: MsgType;
 
-  @IsDefined()
-  @IsEmpty()
-  @IsString()
   content: string;
 
   time: number;
