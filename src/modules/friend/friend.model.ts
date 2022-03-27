@@ -55,6 +55,8 @@ export class FriendMessage {
 }
 
 interface Message {
+  user_id: string;
+
   messageType: MsgType;
 
   content: string;

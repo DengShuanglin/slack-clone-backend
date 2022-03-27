@@ -15,11 +15,9 @@ import {
 } from '@nestjs/websockets';
 import { InjectModel } from '@/common/transformers/model.transformer';
 import { MongooseModel } from '@/interfaces/mongoose.interface';
-import { User } from '../user/user.model';
+import { addType, User } from '../user/user.model';
 import { FriendMessageDto, UserMap } from './chat.model';
 import { RCode } from '@/constants/system.constant';
-import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '@/common/guards/auth.guard';
 import { CacheService } from '@/processors/cache/cache.service';
 import { FriendMessage } from '../friend/friend.model';
 
@@ -29,7 +27,6 @@ import { FriendMessage } from '../friend/friend.model';
     origin: '*',
   },
 })
-@UseGuards(JwtAuthGuard)
 export class ChatGateway {
   constructor(
     @InjectModel(User) private readonly userModel: MongooseModel<User>,
@@ -45,9 +42,17 @@ export class ChatGateway {
     const userRoom = client.handshake.query.user_id as string;
     // 用户独有消息房间 根据userId
     userRoom && client.join(userRoom);
-    const data = await this.cacheService.get(`admin:msg:${userRoom}`);
-    data && this.server.to(userRoom).emit('confirmRequest', data);
+    // data && this.server.to(userRoom).emit('confirmRequest', data.friendMsgs);
     return '连接成功';
+  }
+
+  @SubscribeMessage('getFriendRequest')
+  async getFriendRequest(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() { user_id }: { user_id: string },
+  ) {
+    const data = await this.userModel.findOne({ id: user_id });
+    this.server.to(user_id).emit('getFriendRequest', data?.friendMsgs);
   }
 
   @SubscribeMessage('addFriend')
@@ -55,6 +60,7 @@ export class ChatGateway {
     const { user_id, friend_id } = data;
     const user = await this.userModel.findOne({ id: user_id }).exec();
     const friend = await this.userModel.findOne({ id: friend_id }).exec();
+
     if (user && friend) {
       if (friend_id === user_id) {
         this.server
@@ -64,6 +70,7 @@ export class ChatGateway {
       }
       const isRelation1 = user.friends.some((id) => id === friend_id);
       const isRelation2 = friend.friends.some((id) => id === user_id);
+
       if (isRelation1 || isRelation2) {
         this.server.to(user_id).emit('addFriend', { code: RCode.FAIL, msg: '好友已存在' });
         return;
@@ -77,27 +84,69 @@ export class ChatGateway {
         avatar: user.avatar,
       };
 
-      // 持久化
-      await this.cacheService.set(`admin:msg:${friend_id}`, data, {
-        ttl: 60 * 60 * 24 * 3,
-      });
-
       this.server.to(friend_id).emit('confirmRequest', {
         code: RCode.OK,
         msg: '添加好友申请',
         data,
       });
+
+      // 持久化
+      // await this.cacheService.lPush(`admin:msg:${friend_id}`, data);
+      await this.userModel
+        .updateOne(
+          { id: user_id },
+          {
+            $push: {
+              friendMsgs: {
+                user_id: friend_id,
+                avatar: friend.avatar,
+                nickname: friend.nickname || 'user' + friend_id,
+                type: addType.Pending,
+              },
+            },
+          },
+        )
+        .exec();
+      await this.userModel
+        .updateOne(
+          { id: friend_id },
+          {
+            $push: {
+              friendMsgs: {
+                user_id,
+                avatar: user.avatar,
+                nickname: user.nickname || 'user' + user_id,
+                type: addType.Pending,
+              },
+            },
+          },
+        )
+        .exec();
     } else {
       this.server.to(user_id).emit('addFriend', { code: RCode.FAIL, msg: '参数错误' });
     }
   }
 
   @SubscribeMessage('confirmRequest')
-  async confirmRequest(@ConnectedSocket() client: Socket, @MessageBody() data: UserMap) {
-    const { user_id, friend_id } = data;
-    this.userModel.updateOne({ id: user_id }, { $push: { friends: friend_id } }).exec();
-    this.userModel.updateOne({ id: friend_id }, { $push: { friends: user_id } }).exec();
-    this.cacheService.delete(`admin:msg:${user_id}`);
+  confirmRequest(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: UserMap & { type: addType },
+  ) {
+    const { user_id, friend_id, type } = data;
+    if (type === addType.agree) {
+      this.userModel
+        .updateOne(
+          { id: friend_id, friendMsgs: { $elemMatch: { user_id } } },
+          { $push: { friends: user_id }, $set: { 'friendMsgs.$.type': addType.agree } },
+        )
+        .exec();
+      this.userModel
+        .updateOne(
+          { id: user_id, friendMsgs: { $elemMatch: { user_id: friend_id } } },
+          { $push: { friends: friend_id }, $set: { 'friendMsgs.$.type': addType.agree } },
+        )
+        .exec();
+    }
     this.server
       .to(user_id)
       .emit('confirmRequest', { code: RCode.OK, msg: '添加好友成功' });
@@ -159,7 +208,11 @@ export class ChatGateway {
         await this.friendMessageModel
           .updateOne(
             { user_id, friend_id },
-            { $push: { msgs: { messageType, content: data.content, time: data.time } } },
+            {
+              $push: {
+                msgs: { user_id, messageType, content: data.content, time: data.time },
+              },
+            },
           )
           .exec();
         this.server

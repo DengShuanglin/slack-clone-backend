@@ -17,8 +17,8 @@ export interface CacheStoreOptions extends CacheModuleOptions {
   redisOptions: RedisStoreOptions;
 }
 
-const createRedisStore = (options: CacheStoreOptions) => {
-  const client: any = createClient(options.redisOptions);
+const createRedisStore: any = (options: CacheStoreOptions) => {
+  const client = createClient(options.redisOptions);
 
   const set = async <T>(
     key: string,

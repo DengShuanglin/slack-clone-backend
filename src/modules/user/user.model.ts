@@ -43,6 +43,11 @@ export class User {
   email: string;
 
   @IsOptional()
+  @IsArray()
+  @prop({ default: [] })
+  friendMsgs: FriendMsg[];
+
+  @IsOptional()
   @IsString()
   @prop({ default: '' })
   nickname: string;
@@ -95,6 +100,19 @@ export class UserInfoPayload {
   @IsNotEmpty()
   @IsString()
   avatar?: string;
+}
+
+export enum addType {
+  Pending,
+  agree,
+  reject,
+}
+
+interface FriendMsg {
+  friend_id: string;
+  avatar: string;
+  nickname: string;
+  type: addType;
 }
 
 export const UserProvider = getProviderByTypegooseClass(User);
