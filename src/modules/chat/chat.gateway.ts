@@ -58,6 +58,7 @@ export class ChatGateway {
   @SubscribeMessage('addFriend')
   async addFriend(@ConnectedSocket() client: Socket, @MessageBody() data: UserMap) {
     const { user_id, friend_id } = data;
+
     const user = await this.userModel.findOne({ id: user_id }).exec();
     const friend = await this.userModel.findOne({ id: friend_id }).exec();
 
@@ -91,7 +92,6 @@ export class ChatGateway {
       });
 
       // 持久化
-      // await this.cacheService.lPush(`admin:msg:${friend_id}`, data);
       await this.userModel
         .updateOne(
           { id: user_id },
@@ -144,6 +144,19 @@ export class ChatGateway {
         .updateOne(
           { id: user_id, friendMsgs: { $elemMatch: { user_id: friend_id } } },
           { $push: { friends: friend_id }, $set: { 'friendMsgs.$.type': addType.agree } },
+        )
+        .exec();
+    } else if (type === addType.reject) {
+      this.userModel
+        .updateOne(
+          { id: friend_id, friendMsgs: { $elemMatch: { user_id } } },
+          { $push: { friends: user_id }, $set: { 'friendMsgs.$.type': addType.reject } },
+        )
+        .exec();
+      this.userModel
+        .updateOne(
+          { id: user_id, friendMsgs: { $elemMatch: { user_id: friend_id } } },
+          { $push: { friends: friend_id }, $set: { 'friendMsgs.$.type': addType.reject } },
         )
         .exec();
     }

@@ -1,4 +1,4 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FriendService } from './friend.service';
 import { nanoid } from 'nanoid';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -27,5 +27,11 @@ export class FriendController {
       if (error) throw error;
     });
     return url;
+  }
+
+  @Get('history')
+  @HttpProcessor.handle({ message: 'Get history messages' })
+  history(@Req() req: { user_id: string; friend_id: string }) {
+    return this.friendService.getAllHistory(req);
   }
 }
