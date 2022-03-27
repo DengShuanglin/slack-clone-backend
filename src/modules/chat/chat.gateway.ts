@@ -228,6 +228,19 @@ export class ChatGateway {
             },
           )
           .exec();
+        await this.friendMessageModel
+          .updateOne(
+            {
+              user_id: friend_id,
+              friend_id: user_id,
+            },
+            {
+              $push: {
+                msgs: { user_id, messageType, content: data.content, time: data.time },
+              },
+            },
+          )
+          .exec();
         this.server
           .to(roomId)
           .emit('friendMessage', { code: RCode.OK, msg: '发送成功', data });
